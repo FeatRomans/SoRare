@@ -1,0 +1,85 @@
+-- Queries by:
+-- Position, League, Age, Reason for purchase (notes), and other.
+
+-- Show everything from dataset
+SELECT * 
+FROM `sound-works-360412.SoRare.SoRare` 
+LIMIT 1000
+
+-- POSITION
+
+-- Amount spent by each position
+SELECT ROUND(SUM(cost_eth), 5) as cost, position
+FROM  `sound-works-360412.SoRare.SoRare` 
+GROUP BY position
+ORDER BY cost desc
+
+-- Average age of players purchased by position
+SELECT ROUND(AVG(age),2) as average_age, position
+FROM  `sound-works-360412.SoRare.SoRare` 
+GROUP BY position
+
+-- Profit by position
+SELECT ROUND(SUM(profit_eth), 4) as profit_total, position
+FROM  `sound-works-360412.SoRare.SoRare` 
+GROUP BY position
+Order by profit_total desc
+
+-- LEAGUE
+
+-- Amount spent per league
+SELECT ROUND(SUM(cost_eth), 5) as cost, league
+FROM  `sound-works-360412.SoRare.SoRare` 
+GROUP BY league
+ORDER BY cost desc
+
+-- Profit by league
+SELECT ROUND(SUM(profit_eth), 4) as profit_total, league
+FROM  `sound-works-360412.SoRare.SoRare` 
+GROUP BY league
+Order by profit_total desc
+
+-- NOTES
+
+-- Most frequent reason for buying player
+
+SELECT COUNT(notes)as count, notes
+FROM  `sound-works-360412.SoRare.SoRare` 
+WHERE NOT notes ='SOLD'
+GROUP BY notes
+ORDER BY count desc
+
+-- AGE
+
+-- Player ages per age bracket
+ select
+  case
+   when age <18 then '16-18'
+   when age between 18 and 24 then '18-24'
+   when age between 25 and 34 then '25-34'
+   when age between 35 and 40 then "35-40"
+ END as age_range, 
+ Count(*) as count
+ from `sound-works-360412.SoRare.SoRare` 
+ group by age_range
+ order by age_range
+
+-- Player profit per age bracket
+ select ROUND(AVG(profit_eth), 4) as profit,
+  case
+   when age <18 then '16-18'
+   when age between 18 and 24 then '18-24'
+   when age between 25 and 34 then '25-34'
+   when age between 35 and 40 then "35-40"
+ END as age_range, 
+ Count(*) as count
+ from `sound-works-360412.SoRare.SoRare` 
+ group by age_range
+ order by age_range desc
+
+-- OTHER
+
+-- Profit by month
+SELECT SUM(profit_eth) as profit_per_month, EXTRACT(MONTH FROM purchase_date) as month
+FROM `sound-works-360412.SoRare.SoRare` 
+GROUP BY EXTRACT(MONTH FROM purchase_date)
